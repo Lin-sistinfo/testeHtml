@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="PT-br">
+<head>
+  <meta charset="UTF-8">
+  <title>documento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zeyada&display=swap" rel="stylesheet">
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: 1000px;
+      background-image: url("/olho_galaxy.jpeg");
+      background-position: center center;
+      overflow: hidden;
+    }
+    .paper {
+      background-image: url("/white-math-paper-texture.jpg");
+      background-size: 500px;
+      background-position: center center;
+      padding: 20px 100px;
+      transform: rotateZ(-5deg);
+      box-shadow: 1px 15px 20px 0px rgba(0,0,0,0.5);
+      position: absolute;
+    }
+    .paper.heart {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      padding: 0;
+      border-radius: 50%;
+      background-image: url('/sol-visto-do-universo.jpg');
+      
+    }
+    .paper.image {
+      padding: 10px;
+    }
+    .paper.image p {
+      font-size: 30px;
+    }
+    img {
+      max-height: 200px;
+      width: 100%;
+      user-select: none;
+    }
+    .paper.heart::after {
+      content: "";
+      /*background-image: url('/sol-visto-do-universo.jpg');*/
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: 150px;
+      background-position: center center;
+      background-repeat: no-repeat;
+      opacity: 0.6;
+    }
+    .paper.red {
+    .paper:nth-of-type(3n) {
+      background-position: left top;
+    }
+    }
+    p {
+      font-family: 'Zeyada';
+      font-size: 50px;
+      color: rgb(0,0,100);
+      opacity: 0.75;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="paper heart"></div>
+
+  <div class="paper image">
+    <p> Apaixonando </p>
+    <p> Por Você  </p>
+    
+  </div>
+
+  <div class="paper image">
+    <p>Que me deixa</p>
+    
+  </div>
+
+  <div class="paper image">
+    <p class="p1">Seu olhar é atento</p>
+    <p class="p2"> e Generoso</p>
+    
+  </div>
+  
+  <div class="paper red">
+    <p>E o que falar </p>
+    <p>dos seus olhos... </p>
+  </div>
+
+  <div class="paper">
+    <p class="p1">Você é </p>
+    <p class="p1"> Incível<span style="color: red !important;">❤️</span></p>
+  </div>
+
+  <div class="paper">
+    <p class="p1">Arraste os papéis para o lado!</p>
+  </div>
+
+  <script>
+    let highestZ = 1;
+
+    class Paper {
+      holdingPaper = false;
+      mouseTouchX = 0;
+      mouseTouchY = 0;
+      mouseX = 0;
+      mouseY = 0;
+      prevMouseX = 0;
+      prevMouseY = 0;
+      velX = 0;
+      velY = 0;
+      rotation = Math.random() * 30 - 15;
+      currentPaperX = 0;
+      currentPaperY = 0;
+      rotating = false;
+
+      init(paper) {
+        const updatePosition = (clientX, clientY) => {
+          if (!this.rotating) {
+            this.mouseX = clientX;
+            this.mouseY = clientY;
+            this.velX = this.mouseX - this.prevMouseX;
+            this.velY = this.mouseY - this.prevMouseY;
+          }
+
+          if (this.holdingPaper) {
+            if (!this.rotating) {
+              this.currentPaperX += this.velX;
+              this.currentPaperY += this.velY;
+            }
+            this.prevMouseX = this.mouseX;
+            this.prevMouseY = this.mouseY;
+
+            paper.style.transform = 
+              `translateX(${this.currentPaperX}px) translateY(${this.currentPaperY}px) rotateZ(${this.rotation}deg)`;
+          }
+        };
+
+        // Mouse
+        document.addEventListener("mousemove", (e) => {
+          updatePosition(e.clientX, e.clientY);
+        });
+
+        paper.addEventListener("mousedown", (e) => {
+          if (this.holdingPaper) return;
+          this.holdingPaper = true;
+          paper.style.zIndex = highestZ++;
+          this.mouseTouchX = e.clientX;
+          this.mouseTouchY = e.clientY;
+          this.prevMouseX = e.clientX;
+          this.prevMouseY = e.clientY;
+
+          if (e.button === 2) {
+            this.rotating = true;
+          }
+        });
+
+        window.addEventListener("mouseup", () => {
+          this.holdingPaper = false;
+          this.rotating = false;
+        });
+
+        // Touch
+        document.addEventListener("touchmove", (e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            updatePosition(touch.clientX, touch.clientY);
+          }
+        });
+
+        paper.addEventListener("touchstart", (e) => {
+          if (this.holdingPaper) return;
+          this.holdingPaper = true;
+          paper.style.zIndex = highestZ++;
+          const touch = e.touches[0];
+          this.mouseTouchX = touch.clientX;
+          this.mouseTouchY = touch.clientY;
+          this.prevMouseX = touch.clientX;
+          this.prevMouseY = touch.clientY;
+        });
+
+        document.addEventListener("touchend", () => {
+          this.holdingPaper = false;
+          this.rotating = false;
+        });
+      }
+    }
+
+    const papers = Array.from(document.querySelectorAll(".paper"));
+    papers.forEach((paper) => {
+      const p = new Paper();
+      p.init(paper);
+    });
+
+    // Desativa menu direito
+    window.addEventListener("contextmenu", (e) => e.preventDefault());
+  </script>
+</body>
+</html>
